@@ -1,0 +1,31 @@
+dataEG1                 Simulated stationary data used in Foster and
+                        Bravington (2009) Section 5.1.1.
+dataEG2                 Simulated non-stationary data used in Foster
+                        and Bravington (2009) Section 5.1.1.
+dataEG3movement         Simulated data, illustrating an outlying
+                        movement residual, used in Foster and
+                        Bravington (2009) Section 5.1.2.
+dataEG3patch            Simulated data, illustrating an outlying patch
+                        residual, used in Foster and Bravington (2009)
+                        Section 5.1.2.
+dataEG4                 Simulated non-stationary data used in Foster
+                        and Bravington (2009) Section 5.1.3.
+diagnos                 Calculation of Markov residuals for
+                        discrete-time non-stationary Markov models with
+                        simple parameterisation.
+examplesForDiagnostics
+                        The examples section of this help file provides
+                        code to produce the plots in Section 5.1 of
+                        Foster and Bravington (2009).
+hrplot                  Plot horizontal residual plots for a RMC model.
+MVfill                  Fill in missing values via a single imputation
+                        from the fitted model.
+RMC                     Package Description
+RMC.mod                 Estimation of categorical discrete-time
+                        non-stationary Markov chain models with simple
+                        parameterisation.
+RMC.pred                Prediction of local area stationary
+                        distribution for an arbitrary number of
+                        covariate combinations.
+sim.chain               Simulate Markov chain data from a Markov model.
+simRandWalk             Simulate a continuous auto-regressive process.

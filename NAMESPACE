@@ -1,0 +1,15 @@
+export( "diagnos",
+"diagnos.envel",
+"hrplot",
+"MVfill",
+"RMC.mod",
+"RMC.pred",
+"sim.chain",
+"simRandWalk",
+"dataEG1",
+"dataEG2",
+"dataEG3movement",
+"dataEG3patch",
+"dataEG4"
+)
+
