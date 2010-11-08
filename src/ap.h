@@ -1001,7 +1001,7 @@ int minint(int m1, int m2);
 double maxreal(double m1, double m2);
 double minreal(double m1, double m2);
 
-};//namespace ap
+}	//namespace ap
 
 
 #endif

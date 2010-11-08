@@ -415,16 +415,17 @@ function(x0, f, m=NULL, D.accur=4, eps=NULL, ...) {
 
 
 ".onLoad" <-
-function ( libname, pkgname)
-{
-  # Generic DLL loader
-  dll.path <- file.path( libname, pkgname, 'libs')
-  dlls <- dir( dll.path, pattern=paste(.Platform$dynlib.ext,'$', sep=""), full=FALSE)
-  names( dlls) <- dlls
-  if( length( dlls)) {
-    dlls[] <- file.path( dll.path, dlls) # so names are sensible
-    sapply( dlls, function( x) try( dyn.load( x)))
-  }
+function( libname, pkgname){
+   # Generic DLL loader
+   dll.path <- file.path( libname, pkgname, 'libs')
+   if( nzchar( subarch <- .Platform$r_arch))
+     dll.path <- file.path( dll.path, subarch)
+   this.ext <- paste( sub( '.', '[.]', .Platform$dynlib.ext, fixed=TRUE), '$', sep='')
+
+   dlls <- dir( dll.path, pattern=this.ext, full=FALSE)
+   names( dlls) <- dlls
+   if( length( dlls)) 
+     lapply( dlls, function( x) library.dynam( sub( this.ext, '', x), package=pkgname, lib.loc=libname))
 }
 
 
@@ -777,13 +778,4 @@ function ( nc=5, ni=rep( 1000, nc), init.var=1, seq.var=0.1)
 	return( res)
 }
 
-
-
-`original!object!list` <-
-c("calc.estat.vec", "calc.ustat.vec", "dataEG1.doc", "dataEG2.doc", 
-"dataEG3movement.doc", "dataEG3patch.doc", "dataEG4.doc", "diagnos", 
-"diagnos.envel", "examplesForDiagnostics.doc", "hrplot", "MVfill", 
-"nd2", ".onLoad", "RMC.GoF", "RMC.mod", "RMC.pred", "sim.chain", 
-"simRandWalk", "dataEG1", "dataEG2", "dataEG3movement", "dataEG3patch", 
-"dataEG4")
 

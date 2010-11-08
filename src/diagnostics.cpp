@@ -27,13 +27,13 @@ extern "C" {
 	parINF.setVals( RphiID, RpiID, *nCovars, *nCats);
 	
 	vector< AD<double> > params( parINF.nPars, 0);
-	for( size_t i=0; i<parINF.nPars; i++)
+	for( int i=0; i<parINF.nPars; i++)
 		params.at( i) = Rpars[i];
 	
 	vector< vector<double> > urv( dat.nCats, vector<double>());
 	vector< vector<int> > cross( dat.nCats, vector<int> ( dat.nCats, 0));	
 	
-	size_t inPatch = 1, notNA = 1;
+	int inPatch = 1, notNA = 1;
 	int start, stop = 0;
 	int patchStart, patchStop;
 	int j = 0;
@@ -44,7 +44,7 @@ extern "C" {
 	double dTP, prevTP;
 	double tmp;
 	
-	for( size_t i=0; i<dat.nChains; i++){
+	for( int i=0; i<dat.nChains; i++){
 		start = stop;
 		stop += dat.nObs.at( i);
 		patchStart = findFirst( *includeEnds, dat, start, stop, cross);			//find first patch
@@ -106,8 +106,8 @@ extern "C" {
 
 void summJumps( const vector< vector<int> > &cross1, const int &n_cats, int *jumps1){
 	int place = 0;
-	for( size_t i=0; i<n_cats; i++)
-		for( size_t j=0; j<n_cats; j++){
+	for( int i=0; i<n_cats; i++)
+		for( int j=0; j<n_cats; j++){
 			jumps1[place] = cross1.at(i).at(j);
 			place++;
 		}
@@ -116,7 +116,7 @@ void summJumps( const vector< vector<int> > &cross1, const int &n_cats, int *jum
 void summURV( const vector< vector<double> > & urv1, const int &n_cats, int *lens1, double *patch1){
 	int place = 0;
 	
-	for( size_t i=0; i<n_cats; i++){
+	for( int i=0; i<n_cats; i++){
 		lens1[i] = urv1.at(i).size();
 		for( size_t j=0; j<urv1.at(i).size(); j++){
 			patch1[place] = urv1.at(i).at(j);
@@ -155,7 +155,7 @@ double urvFirstPatch( const vector< AD<double> > &params1, const RMCdata &dat1, 
 	prevTP = dTP;
 	pdf = 1- dTP;
 	culProb += pdf;
-	for( size_t i=( firstStop1-1); i>firstStart1; i--){
+	for( int i=( firstStop1-1); i>firstStart1; i--){
 		if( dat1.states.at( i-1) == -9)
 			return( -9);
 		dTP = calcTel( params1, dat1, parINF1, i-1, 1);
@@ -182,7 +182,7 @@ double urvLastPatch( const vector< AD<double> > &params1, const RMCdata &dat1, c
 	prevTP = dTP;
 	pdf = 1 - dTP;
 	culProb += pdf;
-	for( size_t i=(lastStart1+1); i<(lastStop1-1); i++){
+	for( int i=(lastStart1+1); i<(lastStop1-1); i++){
 		if( dat1.states.at( i) == -9)
 			return( -9);
 		dTP = calcTel( params1, dat1, parINF1, i, 1);
@@ -199,7 +199,7 @@ double urvLastPatch( const vector< AD<double> > &params1, const RMCdata &dat1, c
 
 
 int findFirst( int RincludeEnds, const RMCdata &dat1, int start1, int stop1, vector< vector<int> > &cross1){
-	size_t flag=0;
+	int flag=0;
 	int newst = start1;
 	
 	if( RincludeEnds!=1)
@@ -221,7 +221,7 @@ int findFirst( int RincludeEnds, const RMCdata &dat1, int start1, int stop1, vec
 }
 				
 int findLast( int RincludeEnds, const RMCdata &dat1, int start1, int stop1, vector< vector<int> > &cross1){
-	size_t flag=0;
+	int flag=0;
 	int newend = stop1-1;
 	
 	if( RincludeEnds!=1){
@@ -258,16 +258,16 @@ void calcJumpDist( const RMCdata & dat1, const PARdata & parINF1, const vector< 
 	int curState=0, siz=0;
 	int place=1;
 	
-	for( size_t i=0; i<dat1.nChains; i++){
-		for( size_t j=start+1; j<stop; j++){
+	for( int i=0; i<dat1.nChains; i++){
+		for( int j=start+1; j<stop; j++){
 			if( ( dat1.states.at( j-1) != -9) && ( dat1.states.at( j) != -9) && ( dat1.states.at( j-1) != dat1.states.at( j))){
 				curState = dat1.states.at( j-1);
 				piVec = calcPiVec( params1, dat1, parINF1, j);
 				sumPi = 0;
-				for( size_t k=0; k<dat1.nCats; k++)
+				for( int k=0; k<dat1.nCats; k++)
 					if( k!=( curState-1))
 						sumPi += Value( piVec.at( k));
-				for( size_t k=0; k<dat1.nCats; k++){
+				for( int k=0; k<dat1.nCats; k++){
 					if( k!=( curState-1)){
 						dTP = Value( piVec.at( k)) / sumPi;
 						if( jumpDist.at( curState-1).at( k).size()==1){
@@ -279,7 +279,7 @@ void calcJumpDist( const RMCdata & dat1, const PARdata & parINF1, const vector< 
 							pD = jumpDist.at( curState-1).at(k);
 							jumpDist.at(curState-1).at(k).at(1) = pD.at(1)*(1-dTP);
 							jumpDist.at( curState-1).at(k).push_back( pD.at( siz-1) * dTP);
-							for( size_t l=2; l<siz; l++)
+							for( int l=2; l<siz; l++)
 								jumpDist.at(curState-1).at(k).at(l) = pD.at( l-1)*dTP + pD.at(l)*(1-dTP);
 						}
 					}
@@ -292,10 +292,10 @@ void calcJumpDist( const RMCdata & dat1, const PARdata & parINF1, const vector< 
 		}
 	}	
 	place = 0;
-	for( size_t i=0; i<dat1.nCats; i++)
-		for( size_t j=0; j<dat1.nCats; j++){
+	for( int i=0; i<dat1.nCats; i++)
+		for( int j=0; j<dat1.nCats; j++){
 			RdistCuts[i*dat1.nCats+j] = (int)jumpDist.at( i).at( j).size();
-			for( size_t k=0; k<RdistCuts[i*dat1.nCats+j]; k++){
+			for( int k=0; k<RdistCuts[i*dat1.nCats+j]; k++){
 				RjumpDists[place] = jumpDist.at( i).at( j).at( k);
 				place++;
 			}

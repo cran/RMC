@@ -13,7 +13,7 @@ extern "C" {
 	parINF.setVals( R_phiID, R_piID, *nCovars, *nCats);
 	
 	vector< AD<double> > params( parINF.nPars, 0);
-	for( size_t i=0; i<parINF.nPars; i++)
+	for( int i=0; i<parINF.nPars; i++)
 		params.at( i) = pars[i];
 	
 	vector< vector<double> > probs;
@@ -24,32 +24,32 @@ extern "C" {
 	
 	int start = 0;
 	int stop = dat.nObs.at( 0);
-	for( size_t i=0; i<dat.nChains; i++){
-		for( size_t j=start; j<stop; j++){
+	for( int i=0; i<dat.nChains; i++){
+		for( int j=start; j<stop; j++){
 			row.assign( dat.nCats, 0.);		
 			if( dat.states.at( j) != -9)			//current observation IS NOT -9		
 				row.at( dat.states.at( j) -1) = 1;
 			else{									//current observation IS -9
 				piVec = calcPiVec( params, dat, parINF, j);			//used to be j-1
 				if( dat.states.at( j-1) == -9){		//Internal -9
-					for( size_t k=0; k<dat.nCats; k++)
+					for( int k=0; k<dat.nCats; k++)
 						phiVec.at( k) = calcSinglePhi( params, dat, parINF, j-1, k+1);		//used to be j-1
-					for( size_t k=0; k<dat.nCats; k++){
+					for( int k=0; k<dat.nCats; k++){
 //						row.at( k) = 0;
 						Tpel = 0;
-						for( size_t l=0; l<dat.nCats; l++){
+						for( int l=0; l<dat.nCats; l++){
 							Tpel = Value( phiVec.at( l) * piVec.at( k));
 							if( k == l)
 								Tpel += 1-Value( phiVec.at( l));
 							row.at( k) += Tpel * prevDist.at( l);
 						}
 					}
-					for( size_t k=0; k<dat.nCats; k++)
+					for( int k=0; k<dat.nCats; k++)
 						prevDist.at( k) = row.at( k);
 				}
 				else{								//First -9 in block
 					phi = calcSinglePhi( params, dat, parINF, j, dat.states.at( j-1));		//used to be j-1
-					for( size_t k=0; k<dat.nCats; k++){
+					for( int k=0; k<dat.nCats; k++){
 						row.at( k) = Value( piVec.at( k) * phi);
 						if( dat.states.at( j-1)-1 == k)
 							row.at( k) += Value( 1-phi);
@@ -65,8 +65,8 @@ extern "C" {
 		}
 	}
 
-	for( size_t j=0; j<dat.nCats; j++)
-		for( size_t i=0; i<dat.nTot; i++)
+	for( int j=0; j<dat.nCats; j++)
+		for( int i=0; i<dat.nTot; i++)
 			R_probs[j*dat.nTot+i] = probs.at( i).at( j);
 }
 }

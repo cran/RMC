@@ -154,9 +154,10 @@ void lbfgsminimize(const int& n,
     int iypt;
     int maxfev;
     int bound;
-    int npt;
+    int npt=1;
     int cp;
     int i;
+	 int kount;
     int nfev;
     int inmc;
     int iycn;
@@ -208,7 +209,7 @@ void lbfgsminimize(const int& n,
         ap::vmove(xold.getvector(1, n), x.getvector(1, n));
         
         Rprintf( "   %d   %f:  ", iter, f);
-        for( size_t kount=1; kount<=n; kount++)
+        for( kount=1; kount<=n; kount++)
         		Rprintf( "%f ", x(kount));
         Rprintf( "\n");
         
@@ -309,7 +310,7 @@ void lbfgsminimize(const int& n,
         {
             info = 5;
             Rprintf( "   %d   %f:  ", iter, f);
-		      for( size_t kount=1; kount<=n; kount++)
+		      for( kount=1; kount<=n; kount++)
         			Rprintf( "%f ", x(kount));
     			Rprintf( "\n Not converged\n");
             return;
@@ -320,7 +321,7 @@ void lbfgsminimize(const int& n,
         {
             info = 4;
             Rprintf( "   %d   %f:  ", iter, f);
-		      for( size_t kount=1; kount<=n; kount++)
+		      for( kount=1; kount<=n; kount++)
         			Rprintf( "%f ", x(kount));
     			Rprintf( "\n Gradient Convergence\n");
             return;
@@ -330,7 +331,7 @@ void lbfgsminimize(const int& n,
         {
             info = 1;
             Rprintf( "   %d   %f:  ", iter, f);
-		      for( size_t kount=1; kount<=n; kount++)
+		      for( kount=1; kount<=n; kount++)
         			Rprintf( "%f ", x(kount));
     			Rprintf( "\n Function Convergence\n");
             return;
@@ -345,7 +346,7 @@ void lbfgsminimize(const int& n,
         {
             info = 2;
             Rprintf( "   %d   %f:  ", iter, f);
-		      for( size_t kount=1; kount<=n; kount++)
+		      for( kount=1; kount<=n; kount++)
         			Rprintf( "%f ", x(kount));
     			Rprintf( "\n Parameter Convergence\n");
             return;
@@ -394,7 +395,7 @@ void lbfgsminimize(const int& n,
     int iypt;
     int maxfev;
     int bound;
-    int npt;
+    int npt=1;
     int cp;
     int i;
     int nfev;
@@ -724,7 +725,7 @@ void lbfgsmcsrch(const int& n,
         {
             stp = stpmin;
         }
-        if( brackt&&(stp<=stmin||stp>=stmax)||nfev>=maxfev-1||infoc==0||brackt&&stmax-stmin<=xtol*stmax )
+        if( brackt&&(stp<=stmin||stp>=stmax)||(nfev>=maxfev-1)||(infoc==0)||(brackt&&stmax-stmin<=xtol*stmax) )
         {
             stp = stx;
         }
@@ -741,7 +742,7 @@ void lbfgsmcsrch(const int& n,
             dg = dg+g(j)*s(j+sstart);
         }
         ftest1 = finit+stp*dgtest;
-        if( brackt&&(stp<=stmin||stp>=stmax)||infoc==0 )
+        if( brackt&&(stp<=stmin||stp>=stmax)||(infoc==0) )
         {
             info = 6;
         }
@@ -836,7 +837,7 @@ void lbfgsmcstep(double& stx,
     double theta;
 
     info = 0;
-    if( brackt&&(stp<=ap::minreal(stx, sty)||stp>=ap::maxreal(stx, sty))||dx*(stp-stx)>=0||stmax<stmin )
+    if( brackt&&(stp<=ap::minreal(stx, sty)||stp>=ap::maxreal(stx, sty))||(dx*(stp-stx)>=0)||(stmax<stmin) )
     {
         return;
     }

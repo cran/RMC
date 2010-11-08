@@ -1,2 +1,1 @@
 PKG_CXXFLAGS = -I. -DNDEBUG
-PKG_LIBS = -lstdc++

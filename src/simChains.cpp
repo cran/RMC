@@ -17,7 +17,7 @@ extern "C" {
 	parINF.setVals( RphiID, RpiID, *nCovars, *nCats);
 
 	vector< AD<double> > params( parINF.nPars, 0);
-	for( size_t i=0; i<parINF.nPars; i++)
+	for( int i=0; i<parINF.nPars; i++)
 		params.at( i) = Rpars[i];
 
 	int start = 0;
@@ -26,31 +26,31 @@ extern "C" {
 	AD<double> phi=0.;
 	vector<double> TPcol( dat.nCats, 0.);
 	
-	for( size_t i=0; i<dat.nChains; i++){
+	for( int i=0; i<dat.nChains; i++){
 		start = stop;
 		stop += dat.nObs.at(i);
 		piVec = calcPiVec( params, dat, parINF, 0);
 		double sum=0.;
-		for( size_t j=0; j<dat.nCats; j++){
+		for( int j=0; j<dat.nCats; j++){
 			phi = calcSinglePhi( params, dat, parINF, 0, j+1);	
 			TPcol.at(j) = Value( piVec.at(j)) / Value( phi);
 			sum += TPcol.at( j);
 		}
-		for( size_t j=0; j<dat.nCats; j++){
+		for( int j=0; j<dat.nCats; j++){
 			TPcol.at( j) = TPcol.at(j)/sum;
 			Rmarg[j] = TPcol.at(j);
 		}
 		dat.states.at( start) = multidraw( dat.nCats, TPcol);
-		for( size_t j=start+1; j<stop; j++){
+		for( int j=start+1; j<stop; j++){
 			piVec = calcPiVec( params, dat, parINF, j);
 			phi = calcSinglePhi( params, dat, parINF, j, dat.states.at( j-1) );
-			for( size_t k=0; k<dat.nCats; k++)
+			for( int k=0; k<dat.nCats; k++)
 				TPcol.at(k) = Value( phi) * Value( piVec.at( k));
 			TPcol.at( dat.states.at( j-1)-1) += 1-Value( phi);
 			dat.states.at( j) = multidraw( dat.nCats, TPcol);		
 		}
 	}
-	for( size_t i=0; i<dat.nTot; i++)
+	for( int i=0; i<dat.nTot; i++)
 		Rstates[i] = dat.states.at( i);
 	
 	PutRNGstate();
@@ -61,7 +61,7 @@ int multidraw( int nCats1, vector<double> probs)
 {
 	bool flag = true;
 	double temp = 0;
-	size_t place = 0;
+	int place = 0;
 	vector<double> cumprobs;
 	cumprobs.push_back( probs.at( 0));
 	for( size_t ii=1; ii<probs.size(); ii++)
@@ -76,15 +76,16 @@ int multidraw( int nCats1, vector<double> probs)
 			return( nCats1);
 		place++;
 	}	
+	return( nCats1);//should never get here!  Return done from two previous return statements.  This line added to appease CRAN maintainers.
 }
 
 	
 extern "C" {
 	void testMult( int *Draws, int *n, int *m, double *Rprobs){
 		vector<double> probs;
-		for( size_t i=0; i<*m; i++)
+		for( int i=0; i<*m; i++)
 			probs.push_back( Rprobs[i]);
-		for( size_t i=0; i<*n; i++)
+		for( int i=0; i<*n; i++)
 			Draws[i] = multidraw( *m, probs);
 	}
 }	
